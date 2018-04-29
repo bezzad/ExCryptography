@@ -10,15 +10,18 @@ namespace NetworkSecurity
     public partial class MainForm : Form
     {
         public string Key => txtKey.Text ?? "default key";
-        public char NameSplittor = ' ';
-        public CryptographyAlgorithms SelectedCryptographyAlgorithm
+        
+        public EnumCryptographyAlgorithms SelectedCryptographyAlgorithm  //eli
         {
             get
             {
-                Enum.TryParse(cmbCryptoTypes.SelectedItem.ToString(), true, out CryptographyAlgorithms algorithm);
+                Enum.TryParse(cmbCryptoTypes.SelectedItem.ToString(), true, out EnumCryptographyAlgorithms algorithm);
                 return algorithm;
             }
         }
+
+
+        //eli
         public FileInfo EncryptedFileInfo => new FileInfo(lblBrowseEncryptedBinaryFile.Text);
         public FileInfo DecryptedFileInfo => new FileInfo(lblBrowseDecryptedBinaryFile.Text);
 
@@ -63,10 +66,10 @@ namespace NetworkSecurity
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            splitContainer.SplitterDistance = splitContainer.Size.Width / 2 - 2;
-            foreach (CryptographyAlgorithms al in Enum.GetValues(typeof(CryptographyAlgorithms)))
+            splitContainer.SplitterDistance = splitContainer.Size.Width / 2 - 2;   //eli
+            foreach (EnumCryptographyAlgorithms al in Enum.GetValues(typeof(EnumCryptographyAlgorithms)))
             {
-                cmbCryptoTypes.Items.Add(al.ToString().ToSelectableString());
+                cmbCryptoTypes.Items.Add(al.ToString());   //eli
             }
 
             cmbCryptoTypes.SelectedIndex = 0;
@@ -102,11 +105,11 @@ namespace NetworkSecurity
             catch (Exception exp)
             {
                 timer.Stop();
-                MessageBox.Show(exp.Message, @"Encryption Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(exp.Message, @"Encryption Error", MessageBoxButtons.OK, MessageBoxIcon.Error);  //eli
             }
             finally
             {
-                lblEncryptDuration.Text = $@"Encrypt Duration: {timer.ElapsedMilliseconds}ms";
+                lblEncryptDuration.Text = $@"Encrypt Duration: {timer.ElapsedMilliseconds}ms"; //eli
             }
 
         }
@@ -115,7 +118,7 @@ namespace NetworkSecurity
         {
             var timer = Stopwatch.StartNew();
             var decryptionAlgorithm = SelectedCryptographyAlgorithm;
-            if (decryptionAlgorithm.GetCryptoAlgorithm() is HashAlgorithm)
+            if (decryptionAlgorithm.GetCryptoServiceProvider() is HashAlgorithm)
             {
                 MessageBox.Show(@"Can not decrypt hashed contents!!!", @"Decryption Warning", MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
@@ -131,7 +134,7 @@ namespace NetworkSecurity
                 else
                 {
                     var enFile = EncryptedFileInfo;
-                    if (enFile.Exists && !string.IsNullOrEmpty(enFile.DirectoryName)) // Binary Decryption
+                    if (enFile.Exists && !string.IsNullOrEmpty(enFile.DirectoryName)) // Binary Decryption   //eli:DirectoryName
                     {
                         var encryptedBytes = File.ReadAllBytes(enFile.FullName);
                         var decryptedBytes = encryptedBytes.Decrypt(Key, SelectedCryptographyAlgorithm);

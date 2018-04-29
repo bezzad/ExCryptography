@@ -1,6 +1,6 @@
 ﻿namespace NetworkSecurity.Helper
 {
-    public enum CryptographyAlgorithms
+    public enum EnumCryptographyAlgorithms
     {
         Aes,
         Des,

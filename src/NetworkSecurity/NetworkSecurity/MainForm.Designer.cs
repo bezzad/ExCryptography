@@ -32,12 +32,14 @@ namespace NetworkSecurity
         {
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.gbEncrypted = new System.Windows.Forms.GroupBox();
+            this.lblEncryptDuration = new System.Windows.Forms.Label();
             this.btnDecrypt = new System.Windows.Forms.Button();
             this.lblBrowseEncryptedBinaryFile = new System.Windows.Forms.Label();
             this.btnBrowseEncryptedBinaryFile = new System.Windows.Forms.Button();
             this.lblEncryptedText = new System.Windows.Forms.Label();
             this.txtEncryptedText = new System.Windows.Forms.TextBox();
             this.gbDecrypted = new System.Windows.Forms.GroupBox();
+            this.lblDecryptDuration = new System.Windows.Forms.Label();
             this.btnEncrypt = new System.Windows.Forms.Button();
             this.lblBrowseDecryptedBinaryFile = new System.Windows.Forms.Label();
             this.btnBrowseDecryptedBinaryFile = new System.Windows.Forms.Button();
@@ -50,8 +52,6 @@ namespace NetworkSecurity
             this.lblKey = new System.Windows.Forms.Label();
             this.txtKey = new System.Windows.Forms.TextBox();
             this.progress = new System.Windows.Forms.ProgressBar();
-            this.lblEncryptDuration = new System.Windows.Forms.Label();
-            this.lblDecryptDuration = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
@@ -86,6 +86,7 @@ namespace NetworkSecurity
             // 
             // gbEncrypted
             // 
+            this.gbEncrypted.BackColor = System.Drawing.Color.Thistle;
             this.gbEncrypted.Controls.Add(this.lblEncryptDuration);
             this.gbEncrypted.Controls.Add(this.btnDecrypt);
             this.gbEncrypted.Controls.Add(this.lblBrowseEncryptedBinaryFile);
@@ -99,6 +100,16 @@ namespace NetworkSecurity
             this.gbEncrypted.TabIndex = 0;
             this.gbEncrypted.TabStop = false;
             this.gbEncrypted.Text = "Encrypted";
+            // 
+            // lblEncryptDuration
+            // 
+            this.lblEncryptDuration.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblEncryptDuration.AutoSize = true;
+            this.lblEncryptDuration.Location = new System.Drawing.Point(31, 412);
+            this.lblEncryptDuration.Name = "lblEncryptDuration";
+            this.lblEncryptDuration.Size = new System.Drawing.Size(114, 17);
+            this.lblEncryptDuration.TabIndex = 6;
+            this.lblEncryptDuration.Text = "Encrypt Duration";
             // 
             // btnDecrypt
             // 
@@ -153,6 +164,7 @@ namespace NetworkSecurity
             // 
             // gbDecrypted
             // 
+            this.gbDecrypted.BackColor = System.Drawing.Color.PowderBlue;
             this.gbDecrypted.Controls.Add(this.lblDecryptDuration);
             this.gbDecrypted.Controls.Add(this.btnEncrypt);
             this.gbDecrypted.Controls.Add(this.lblBrowseDecryptedBinaryFile);
@@ -166,6 +178,16 @@ namespace NetworkSecurity
             this.gbDecrypted.TabIndex = 1;
             this.gbDecrypted.TabStop = false;
             this.gbDecrypted.Text = "Decrypted";
+            // 
+            // lblDecryptDuration
+            // 
+            this.lblDecryptDuration.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblDecryptDuration.AutoSize = true;
+            this.lblDecryptDuration.Location = new System.Drawing.Point(33, 412);
+            this.lblDecryptDuration.Name = "lblDecryptDuration";
+            this.lblDecryptDuration.Size = new System.Drawing.Size(115, 17);
+            this.lblDecryptDuration.TabIndex = 13;
+            this.lblDecryptDuration.Text = "Decrypt Duration";
             // 
             // btnEncrypt
             // 
@@ -256,7 +278,7 @@ namespace NetworkSecurity
             // 
             this.gbCrypto.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gbCrypto.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.gbCrypto.BackColor = System.Drawing.Color.DarkSeaGreen;
             this.gbCrypto.Controls.Add(this.lblKey);
             this.gbCrypto.Controls.Add(this.txtKey);
             this.gbCrypto.Controls.Add(this.rbtnSelectBinaryType);
@@ -296,26 +318,6 @@ namespace NetworkSecurity
             this.progress.Size = new System.Drawing.Size(1014, 15);
             this.progress.Step = 1;
             this.progress.TabIndex = 3;
-            // 
-            // lblEncryptDuration
-            // 
-            this.lblEncryptDuration.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblEncryptDuration.AutoSize = true;
-            this.lblEncryptDuration.Location = new System.Drawing.Point(31, 412);
-            this.lblEncryptDuration.Name = "lblEncryptDuration";
-            this.lblEncryptDuration.Size = new System.Drawing.Size(114, 17);
-            this.lblEncryptDuration.TabIndex = 6;
-            this.lblEncryptDuration.Text = "Encrypt Duration";
-            // 
-            // lblDecryptDuration
-            // 
-            this.lblDecryptDuration.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblDecryptDuration.AutoSize = true;
-            this.lblDecryptDuration.Location = new System.Drawing.Point(33, 412);
-            this.lblDecryptDuration.Name = "lblDecryptDuration";
-            this.lblDecryptDuration.Size = new System.Drawing.Size(115, 17);
-            this.lblDecryptDuration.TabIndex = 13;
-            this.lblDecryptDuration.Text = "Decrypt Duration";
             // 
             // MainForm
             // 

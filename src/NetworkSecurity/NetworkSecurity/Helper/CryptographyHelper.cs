@@ -6,41 +6,37 @@ namespace NetworkSecurity.Helper
 {
     public static class CryptographyHelper
     {
-        public static object GetCryptoAlgorithm(this CryptographyAlgorithms algorithm)
+        public static object GetCryptoServiceProvider(this EnumCryptographyAlgorithms algorithm)
         {
             switch (algorithm)
             {
                 // Symmetric Algorithms
-                case CryptographyAlgorithms.Aes: return new AesCryptoServiceProvider();
-                case CryptographyAlgorithms.Des: return new DESCryptoServiceProvider();
-                case CryptographyAlgorithms.TripleDes: return new TripleDESCryptoServiceProvider();
-                case CryptographyAlgorithms.Rc2: return new RC2CryptoServiceProvider();
+                case EnumCryptographyAlgorithms.Aes: return new AesCryptoServiceProvider();// :AES  :SymmetricAlgorithm
+                case EnumCryptographyAlgorithms.Des: return new DESCryptoServiceProvider();// :DES :SymmetricAlgorithm
+                case EnumCryptographyAlgorithms.TripleDes: return new TripleDESCryptoServiceProvider(); // :TripleDES :SymmetricAlgorithm
+                case EnumCryptographyAlgorithms.Rc2: return new RC2CryptoServiceProvider();// :RC2 :SymmetricAlgorithm
 
                 // Hash Algorithms
-                case CryptographyAlgorithms.Md5: return new MD5CryptoServiceProvider();
-                case CryptographyAlgorithms.Sha1: return new SHA1CryptoServiceProvider();
-                case CryptographyAlgorithms.Sha256: return new SHA256CryptoServiceProvider();
-                case CryptographyAlgorithms.Sha384: return new SHA384CryptoServiceProvider();
-                case CryptographyAlgorithms.Sha512: return new SHA512CryptoServiceProvider();
+                case EnumCryptographyAlgorithms.Md5: return new MD5CryptoServiceProvider();// MD5  :HashAlgorithm
+                case EnumCryptographyAlgorithms.Sha1: return new SHA1CryptoServiceProvider();// SHA1  :HashAlgorithm
+                case EnumCryptographyAlgorithms.Sha256: return new SHA256CryptoServiceProvider();// SHA256 :HashAlgorith
+                case EnumCryptographyAlgorithms.Sha384: return new SHA384CryptoServiceProvider();// SHA384  :HashAlgorithm
+                case EnumCryptographyAlgorithms.Sha512: return new SHA512CryptoServiceProvider();// SHA512  :HashAlgorithm
 
                 default: return new AesCryptoServiceProvider();
             }
         }
 
-        public static byte[] Encrypt(this byte[] toEncryptArray, string key, CryptographyAlgorithms algorithm)
+        public static byte[] Encrypt(this byte[] toEncryptArray, string key, EnumCryptographyAlgorithms algorithm)
         {
             byte[] resultArray = null;
 
-            var objAlgorithmProvider = algorithm.GetCryptoAlgorithm();
+            var objAlgorithmProvider = algorithm.GetCryptoServiceProvider();
 
             if (objAlgorithmProvider is SymmetricAlgorithm symmetricAlg)
             {
                 //set the secret key for the symmetric algorithm
-                symmetricAlg.SetupSymmetricKey(key);
-                //mode of operation. there are other 4 modes. We choose ECB(Electronic code Book)
-                symmetricAlg.Mode = CipherMode.ECB;
-                //padding mode(if any extra byte added)
-                symmetricAlg.Padding = PaddingMode.PKCS7;
+                symmetricAlg.SetupSymmetric(key);
 
                 var cTransform = symmetricAlg.CreateEncryptor();
                 //transform the specified region of bytes array to resultArray
@@ -58,8 +54,9 @@ namespace NetworkSecurity.Helper
             return resultArray;
         }
 
-        public static string Encrypt(this string toEncrypt, string key, CryptographyAlgorithms algorithm)
+        public static string Encrypt(this string toEncrypt, string key, EnumCryptographyAlgorithms algorithm)
         {
+            // string --> (utf8) byte[] --> encrypt ---> byte[] ---> (base64) string
             var toEncryptArray = Encoding.UTF8.GetBytes(toEncrypt);
             var encryptedBytes = toEncryptArray.Encrypt(key, algorithm);
 
@@ -67,23 +64,16 @@ namespace NetworkSecurity.Helper
             return Convert.ToBase64String(encryptedBytes, 0, encryptedBytes.Length);
         }
 
-        public static byte[] Decrypt(this byte[] cipherArray, string key, CryptographyAlgorithms algorithm)
+        public static byte[] Decrypt(this byte[] cipherArray, string key, EnumCryptographyAlgorithms algorithm)
         {
             byte[] resultArray = null;
 
-            var objAlgorithmProvider = algorithm.GetCryptoAlgorithm();
+            var objAlgorithmProvider = algorithm.GetCryptoServiceProvider();
 
             if (objAlgorithmProvider is SymmetricAlgorithm symmetricAlg)
             {
                 //set the secret key for the symmetric algorithm
-                symmetricAlg.SetupSymmetricKey(key);
-
-                //mode of operation. there are other 4 modes.
-                //We choose ECB(Electronic code Book)
-                symmetricAlg.Mode = CipherMode.ECB;
-
-                //padding mode(if any extra byte added)
-                symmetricAlg.Padding = PaddingMode.PKCS7;
+                symmetricAlg.SetupSymmetric(key);
 
                 var cTransform = symmetricAlg.CreateDecryptor();
                 resultArray = cTransform.TransformFinalBlock(cipherArray, 0, cipherArray.Length);
@@ -91,17 +81,11 @@ namespace NetworkSecurity.Helper
                 //Release resources held by symmetric Encryptor
                 symmetricAlg.Clear();
             }
-            else if (objAlgorithmProvider is HashAlgorithm hashAlg)
-            {
-                resultArray = hashAlg.ComputeHash(cipherArray);
-                //Release resources held by hasher
-                hashAlg.Clear();
-            }
 
             return resultArray;
         }
 
-        public static string Decrypt(this string cipherString, string key, CryptographyAlgorithms algorithm)
+        public static string Decrypt(this string cipherString, string key, EnumCryptographyAlgorithms algorithm)
         {
             //get the byte code of the string
             var toEncryptArray = Convert.FromBase64String(cipherString);
@@ -112,12 +96,23 @@ namespace NetworkSecurity.Helper
         }
 
 
-        public static void SetupSymmetricKey(this SymmetricAlgorithm alg, string pass, string saltNoise = @"H\,g,d@13")
+        public static void SetupSymmetric(this SymmetricAlgorithm alg, string pass, string salt = @"A1b2C3d4E@noise")
         {
-            var salt = Encoding.ASCII.GetBytes(saltNoise);
-            var key = new Rfc2898DeriveBytes(pass, salt);
-            alg.Key = key.GetBytes(alg.KeySize / 8);
-            alg.IV = key.GetBytes(alg.BlockSize / 8);
+            // get salt bytes in ASCII encoding
+            var saltBytes = Encoding.ASCII.GetBytes(salt);
+            //
+            // create a password with pass and salt to derive key
+            var key = new Rfc2898DeriveBytes(pass, saltBytes);
+            alg.Key = key.GetBytes(alg.KeySize / 8); // set key by algorithm
+            alg.IV = key.GetBytes(alg.BlockSize / 8); // set initialization vector by algorithm block size
+
+            //mode of operation. there are other 4 modes.
+            //We choose ECB(Electronic code Book)
+            alg.Mode = CipherMode.ECB;
+
+            //padding mode(if any extra byte added)
+            alg.Padding = PaddingMode.PKCS7;
+
             // alg should now fully set-up.
         }
     }
